@@ -52,7 +52,7 @@ export class TypingGame {
 		};
 	}
 
-	startGame() {
+	startGame = () => {
 		this.startTime = Date.now();
 
 		//start timer
@@ -68,18 +68,18 @@ export class TypingGame {
 				clearTimeout(timeoutTimer);
 			}
 		}
-	}
+	};
 
-	endGame() {
+	endGame = () => {
 		this.endTime = Date.now();
 		this.report = this.generateReport();
 		this.stopGame?.();
 		this.gameStatus = 'finished';
 
 		return this.report;
-	}
+	};
 
-	recordKey(key: string) {
+	recordKey = (key: string) => {
 		console.log(key);
 		//TODO only allow letters, numbers, and certain punctuation
 		this.actions++;
@@ -87,11 +87,15 @@ export class TypingGame {
 			this.gameStatus = 'inProgress';
 			this.stopGame = this.startGame();
 		}
-
+		// console.log(this);
+		console.log(key, 'Backspace', key === 'Backspace');
 		if (key === 'Backspace') {
-			if (this.currentlyTypingWord.length > 0 && this.recentErrors > 0) {
+			if (this.currentlyTypingWord.length > 0) {
+				this.currentlyTypingWord = this.currentlyTypingWord.slice(0, -1);
+			} else if (this.recentErrors > 0) {
 				this.currentWordIndex--;
 				this.currentlyTypingWord = this.typedWords[this.currentWordIndex - 1];
+				this.recentErrors--;
 				this.totalErrors--;
 			}
 		} else if (key === ' ') {
@@ -105,12 +109,16 @@ export class TypingGame {
 			this.typedWords.push(this.currentlyTypingWord);
 			this.currentWordIndex++;
 			this.currentlyTypingWord = '';
+			if (this.currentWordIndex === this.words.length) {
+				this.endGame();
+			}
 		} else {
 			this.currentlyTypingWord += key;
 		}
-	}
+		return this;
+	};
 
-	generateReport() {
+	generateReport = () => {
 		if (this.gameStatus === 'finished' && this.endTime && this.startTime) {
 			return {
 				timeSpent: this.endTime - this.startTime,
@@ -121,5 +129,5 @@ export class TypingGame {
 		} else {
 			return;
 		}
-	}
+	};
 }

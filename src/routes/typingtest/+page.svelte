@@ -2,23 +2,26 @@
 	import { TypingGame } from './typing-game';
 
     let pressedKey = '';
-    let currentWord = '';
+    let wordsToPlay = [];
     let game = new TypingGame(
         10000,
         200,
         'easy',
         'common'
     );
-    $: wordsToPlay = game.words;
-
-	function keydown(event: KeyboardEvent) {
+    $: typing = game.currentlyTypingWord;
+    $: status = game.gameStatus;
+    $: currentWord = game.currentWordIndex;
+    $: words = game.words;
+    $: startTime = game.startTime;
+    $: endTime = game.endTime;
+    
+	const keydown = (event: KeyboardEvent) => {
         game.recordKey(event.key);
+        game = game;
+        console.log(game);
         pressedKey = event.key;
 	}
-    function recordKey() {
-        //record the key pressed
-        
-    }
     const startNewGame = () => {
         //game should have word settings, like word dictionary, play style, etc.
         game = new TypingGame(
@@ -44,9 +47,17 @@
 </svelte:head>
 
 <div>
-
     <p>Game Status: {game.gameStatus}</p>
     <p>Words: {game.words}</p>
     <p>current word: {game.words[game.currentWordIndex]}</p>
     <p>Currently Typing word: {game.currentlyTypingWord}</p>
+    <p></p>
+    <br />
+    <br />
+    <br />
+    <p>Time Remaining: {game?.startTime && game?.startTime + game.gameLength - Date.now()}</p>
+    <p>Words Per Minute: {game.report?.typedWordsPerMinute}</p>
+    <p>Characters Per Minute: {game.report?.typedCharsPerMinute}</p>
+    <p>Errors: {game.totalErrors}</p>
+
 </div>
