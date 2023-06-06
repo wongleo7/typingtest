@@ -1,17 +1,33 @@
 <script lang="ts">
-	import { Game } from '../sverdle/game';
+	import { TypingGame } from './typing-game';
 
     let pressedKey = '';
+    let currentWord = '';
+    let game = new TypingGame(
+        10000,
+        200,
+        'easy',
+        'common'
+    );
+    $: wordsToPlay = game.words;
 
 	function keydown(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
-			console.log('enter');
-		}
+        game.recordKey(event.key);
         pressedKey = event.key;
 	}
-    function startNewGame() {
+    function recordKey() {
+        //record the key pressed
+        
+    }
+    const startNewGame = () => {
         //game should have word settings, like word dictionary, play style, etc.
-        let game = new Game();
+        game = new TypingGame(
+            10000,
+            200,
+            'easy',
+            'common'
+        );
+        wordsToPlay = game.words;
         // game should return a list of words (200 words?)
         //and the game should remember the start time. 
         // When we are done, we should see states like:
@@ -29,5 +45,8 @@
 
 <div>
 
-    <p>Pressed key: {pressedKey}</p>
+    <p>Game Status: {game.gameStatus}</p>
+    <p>Words: {game.words}</p>
+    <p>current word: {game.words[game.currentWordIndex]}</p>
+    <p>Currently Typing word: {game.currentlyTypingWord}</p>
 </div>
